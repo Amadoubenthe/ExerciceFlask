@@ -10,8 +10,8 @@ from resources.project import Project, ProjectList, ArchiveProject
 from resources.task import Task, TaskList, Statistic, CompleteTask, StatisticPeriode, BestTaskTermined, BestTaskTerminedInterval
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root''@localhost/test_db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///databente.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root''@localhost/test_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['MAIL_SERVER']="smtp.gmail.com"

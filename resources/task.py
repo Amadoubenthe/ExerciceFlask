@@ -216,7 +216,7 @@ class StatisticPeriode(Resource):
                 )
 
         project_task_termined = [r._asdict() for r in qry]        
-        return {"project_task_termined": project_task_termined}, 200       
+        return {"project_task_termined": project_task_termined}, 200   
 
 class BestTaskTermined(Resource):
     @jwt_required
