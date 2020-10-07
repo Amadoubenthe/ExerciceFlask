@@ -168,7 +168,7 @@ class CompleteTask(Resource):
         task.status = False
         task.termined_at = datetime.datetime.now()
         task.save_to_db()
-        return {"message": "Task deleted"}
+        return {"message": "Task completed"}
 
 class TaskList(Resource):
     @jwt_required
