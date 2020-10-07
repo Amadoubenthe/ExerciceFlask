@@ -1,7 +1,11 @@
 from flask_restful import Resource, reqparse
+from sqlalchemy import func, desc
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from db import db
+
 from models.project import ProjectModel
+from models.task import TaskModel
 
 class Project(Resource):
     parser = reqparse.RequestParser()
@@ -132,6 +136,48 @@ class ProjectList(Resource):
                 "nomber_project": nomber_project,
                 "project": projects
             }, 200
+
+class ProjectStat(Resource):
+    @jwt_required
+    def get(self, id):
+        current_user_id = get_jwt_identity()
+        project = ProjectModel.find_by_id(id)
+        if not project:
+            return {"message": "project not found"}, 404
+
+        if project.user_id != current_user_id:
+            return {"message": "Unauthorized"}, 401
+        
+        number_tasks = (db.session.query(
+                func.count(TaskModel.id).label('total_task'))
+                .join(ProjectModel, TaskModel.project_id == ProjectModel.id)
+                .filter(TaskModel.project_id == project.id)
+                .filter(TaskModel.user_id==current_user_id)
+                .scalar()
+                )
+
+        number_tasks_termined = (db.session.query(
+                func.count(TaskModel.id).label('total_task_temined'))
+                .filter(TaskModel.project_id == project.id)
+                .filter(TaskModel.status == False)
+                .filter(TaskModel.user_id==current_user_id)
+                .scalar()
+                )
+        
+        if number_tasks == 0:
+            return {"message": "Not task"}
+        percentage = number_tasks_termined*100/number_tasks
+
+        print("nombre de tache",number_tasks)
+        print("tache terminer", number_tasks_termined)
+        print("pourcentage", percentage)
+
+        return {
+            "number_tasks": number_tasks,
+            "number_tasks_termined": number_tasks_termined,
+            "percentage": percentage
+
+        }, 200
 
 class ArchiveProject(Resource):
     @jwt_required

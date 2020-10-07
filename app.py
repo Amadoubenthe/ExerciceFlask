@@ -6,7 +6,7 @@ from flask_mail import Mail, Message
 from db import db
 
 from resources.user import UserRegister, User, UserLogin, UserActivateResource
-from resources.project import Project, ProjectList, ArchiveProject
+from resources.project import Project, ProjectList, ArchiveProject, ProjectStat
 from resources.task import Task, TaskList, Statistic, CompleteTask, StatisticPeriode, BestTaskTermined, BestTaskTerminedInterval
 
 app = Flask(__name__)
@@ -82,6 +82,8 @@ api.add_resource(User, '/users/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 
 api.add_resource(ProjectList, '/projects')
+
+api.add_resource(ProjectStat, '/project_satat/<int:id>')
 
 api.add_resource(BestTaskTermined, '/best_task_termined')
 api.add_resource(BestTaskTerminedInterval, '/best_task_termined/<string:date_debut>/<string:date_fin>')
