@@ -78,7 +78,7 @@ def revoked_token_callback():
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserActivateResource, '/users/activate/<string:token>')
-
+api.add_resource(UserLogin, '/login')
 api.add_resource(User, '/users/<int:user_id>')
 api.add_resource(ProjectList, '/projects')
 api.add_resource(ProjectStat, '/projects/<int:id>/statistic')
