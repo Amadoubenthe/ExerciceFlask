@@ -167,11 +167,7 @@ class ProjectStat(Resource):
         if number_tasks == 0:
             return {"message": "Not task"}
         percentage = number_tasks_termined*100/number_tasks
-
-        print("nombre de tache",number_tasks)
-        print("tache terminer", number_tasks_termined)
-        print("pourcentage", percentage)
-
+        
         return {
             "number_tasks": number_tasks,
             "number_tasks_termined": number_tasks_termined,

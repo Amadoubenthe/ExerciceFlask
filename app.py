@@ -78,27 +78,19 @@ def revoked_token_callback():
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserActivateResource, '/users/activate/<string:token>')
+
 api.add_resource(User, '/users/<int:user_id>')
-api.add_resource(UserLogin, '/login')
-
 api.add_resource(ProjectList, '/projects')
-
-api.add_resource(ProjectStat, '/project_satat/<int:id>')
-
+api.add_resource(ProjectStat, '/projects/<int:id>/statistic')
+api.add_resource(ArchiveProject, '/projects/<int:id>/archive_projects')
+api.add_resource(CompleteTask, '/tasks/<int:id>/complete_task')
 api.add_resource(BestTaskTermined, '/best_task_termined')
 api.add_resource(BestTaskTerminedInterval, '/best_task_termined/<string:date_debut>/<string:date_fin>')
-
 api.add_resource(Statistic, '/project_stat')
 api.add_resource(StatisticPeriode, '/statistic_periode/<string:date_debut>/<string:date_fin>')
-
-api.add_resource(ArchiveProject, '/archive_projects/<int:id>')
-
-api.add_resource(CompleteTask, '/complete_task/<int:id>')
-
-api.add_resource(Project, '/projects', '/projects/<int:id>', endpoint='projects')
-
+api.add_resource(Project, '/projects', '/projects/<int:id>')
 api.add_resource(TaskList, '/tasks')
-api.add_resource(Task, '/tasks', '/tasks/<int:id>', endpoint='tasks')
+api.add_resource(Task, '/tasks', '/tasks/<int:id>')
 
 
 if __name__ == '__main__':
