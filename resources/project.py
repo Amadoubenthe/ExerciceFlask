@@ -166,6 +166,7 @@ class ProjectStat(Resource):
         
         if number_tasks == 0:
             return {"message": "Not task"}
+            
         percentage = number_tasks_termined*100/number_tasks
         
         return {

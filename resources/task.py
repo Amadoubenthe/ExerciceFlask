@@ -195,9 +195,9 @@ class Statistic(Resource):
                 .group_by(TaskModel.project_id)
                 .order_by(desc('total_task_termined')).all()
                 )
+        
 
-
-        project_task_termined = [r._asdict() for r in qry]      
+        project_task_termined = [r._asdict() for r in qry]     
         return {
             "project_task_termined": project_task_termined,
         }, 200
