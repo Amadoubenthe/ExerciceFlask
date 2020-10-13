@@ -8,6 +8,7 @@ from models.project import ProjectModel
 from models.task import TaskModel
 
 class Project(Resource):
+
     parser = reqparse.RequestParser()
 
     parser.add_argument(
@@ -31,8 +32,7 @@ class Project(Resource):
 
         if not project:
             return {"message": "project not found"}, 404
-        print(current_user_id)
-        print(project.user_id)    
+
         if current_user_id == project.user_id:
             project_id = project.id
             preject_name = project.project_name
@@ -44,6 +44,7 @@ class Project(Resource):
                 "description": description,
                 "is_archived": is_archived
             }, 200
+
         return {"message": "Unauthorized"}, 401
 
     @jwt_required    
@@ -119,15 +120,19 @@ class Project(Resource):
         project = ProjectModel.find_by_id(id)
         if not project:
             return {"message": "project not found"}, 404
+
         if project.user_id != current_user_id:
             return {"message": "Unauthorized"}, 401
+            
         project.delete_from_db()
+
         return {"message": "Project deleted"}, 200    
 
 class ProjectList(Resource):
     @jwt_required
     def get(self):
         current_user_id = get_jwt_identity()
+
         if current_user_id:
             projects = [x.json() for x in ProjectModel.query.filter(ProjectModel.user_id==current_user_id).all()]
 
@@ -140,8 +145,10 @@ class ProjectList(Resource):
 class ProjectStat(Resource):
     @jwt_required
     def get(self, id):
+
         current_user_id = get_jwt_identity()
         project = ProjectModel.find_by_id(id)
+
         if not project:
             return {"message": "project not found"}, 404
 
@@ -179,14 +186,20 @@ class ProjectStat(Resource):
 class ArchiveProject(Resource):
     @jwt_required
     def get(self, id):
+
         current_user_id = get_jwt_identity()
         project = ProjectModel.find_by_id(id)
+
         if not project:
             return {"message": "project not found"}, 404
+
         if project.is_archived == True:
-            return {"message": "project already archived"}  
+            return {"message": "project already archived"} 
+
         if project.user_id != current_user_id:
             return {"message": "Unauthorized"}, 401
+
         project.is_archived = True
         project.save_to_db()
+        
         return {"message": "Project Archived"}, 200

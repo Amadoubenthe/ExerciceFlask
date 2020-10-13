@@ -16,13 +16,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['MAIL_SERVER']="smtp.gmail.com"
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'benthebagnan@gmail.com'
-app.config['MAIL_PASSWORD'] = 'DidjaBagnan123@'
+app.config['MAIL_USERNAME'] = 'your_email_address'
+app.config['MAIL_PASSWORD'] = 'password'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['SECRET_KEY'] = "diallo"
 app.config['SECURITY_PASSWORD_SALT']='gfghtt6884@@%68848@$$@yygb'
-app.config['MAIL_DEFAULT_SENDER']='benthebagnan@gmail.com'
+app.config['MAIL_DEFAULT_SENDER']='your_email_address'
 
 api = Api(app)
 

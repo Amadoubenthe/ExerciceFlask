@@ -31,20 +31,25 @@ class Task(Resource):
                         type=int,
                         required=False,
                         nullable=False,
-                    )                                    
+                    )
+
     @jwt_required
     def get(self, id):
         current_user_id = get_jwt_identity()
         task = TaskModel.find_by_id(id)
+
         if not task:
             return {"message": "task not found"}, 404
+
         if current_user_id == task.user_id:
             task_id = task.id
             task_name = task.task_name
+
             return {
                 "task_id": task_id,
                 "task_name": task_name
             }, 200
+
         return {"message": "Unauthorized"}, 401
 
     @jwt_required
@@ -87,6 +92,7 @@ class Task(Resource):
         task_id = task.id    
         task_name = task.task_name
         status = task.status
+
         return {
             "task_id": task_id,
             "task_name": task_name,
@@ -95,10 +101,13 @@ class Task(Resource):
 
     @jwt_required    
     def put(self, id):
+
         current_user_id = get_jwt_identity()
         task = TaskModel.find_by_id(id)
+
         if not task:
             return {"message": "task not found"}, 404
+
         if current_user_id != task.user_id:
             return {"message": "Unauthorized"}, 401
 
@@ -114,13 +123,10 @@ class Task(Resource):
         if not project:
             return {"message": "project not found"}, 404
 
-        print("Projet archiver",project.is_archived)
-
         if project.is_archived:
             return {"message": "Close Unauthorized"}, 401
 
         status = data['status']
-
         if status:
             task.status = status
 
@@ -135,7 +141,8 @@ class Task(Resource):
 
         project_id = task.project_id    
         status = task.status
-        task_name = task.task_name    
+        task_name = task.task_name
+
         return {
             "project_id": project_id,
             "task_name": task_name,
@@ -144,30 +151,41 @@ class Task(Resource):
 
     @jwt_required
     def delete(self, id):
+
         current_user_id = get_jwt_identity()
         task = TaskModel.find_by_id(id)
+
         if not task:
             return {"message": "task not found"}, 404
+
         if task.user_id != current_user_id:
             return {"message": "Unauthorized"}, 401
+
         task.delete_from_db()
+
         return {"message": "Task deleted"}
 
 
 class CompleteTask(Resource):
     @jwt_required
     def get(self, id):
+
         current_user_id = get_jwt_identity()
         task = TaskModel.find_by_id(id)
+
         if not task:
             return {"message": "task not found"}, 404
+
         if task.status == False:
-            return {"message": "Task aleready completed"} 
+            return {"message": "Task aleready completed"}
+
         if task.user_id != current_user_id:
             return {"message": "Unauthorized"}, 401
+
         task.status = False
         task.termined_at = datetime.datetime.now()
         task.save_to_db()
+
         return {"message": "Task completed"}
 
 class TaskList(Resource):
@@ -185,8 +203,8 @@ class TaskList(Resource):
 class Statistic(Resource):
     @jwt_required
     def get(self):
+
         current_user_id = get_jwt_identity()
-        print(current_user_id)
 
         qry = (db.session.query(ProjectModel.project_name.label('project_name'),
                 func.count(TaskModel.status).label('total_task_termined'))
@@ -205,6 +223,7 @@ class Statistic(Resource):
 class StatisticPeriode(Resource):
     @jwt_required
     def get(self, date_debut, date_fin):
+
         current_user_id = get_jwt_identity()
         qry = (db.session.query(ProjectModel.project_name.label('project_name'),
                 func.count(TaskModel.status).label('total_task_termined'))
@@ -221,7 +240,9 @@ class StatisticPeriode(Resource):
 class BestTaskTermined(Resource):
     @jwt_required
     def get(self):
+
         current_user_id = get_jwt_identity()
+
         qry = (db.session.query(ProjectModel.project_name,ProjectModel.description.label('project_name'),
                 func.count(TaskModel.status).label('total_task_termined'))
                 .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.status == False)
@@ -241,6 +262,7 @@ class BestTaskTermined(Resource):
 class BestTaskTerminedInterval(Resource):
     @jwt_required
     def get(self, date_debut, date_fin):
+
         current_user_id = get_jwt_identity()
 
         qry = (db.session.query(ProjectModel.project_name,ProjectModel.description.label('project_name'),
@@ -253,6 +275,7 @@ class BestTaskTerminedInterval(Resource):
                 )           
 
         best_project = {}
+
         for row in qry:
             best_project = {"project_name":row[0], "project_description":row[1], "task_termined":row[2]}
 

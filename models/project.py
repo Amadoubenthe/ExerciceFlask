@@ -39,11 +39,7 @@ class ProjectModel(db.Model):
 
     @classmethod
     def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-
-    @classmethod
-    def find_by_name(cls, project_name):
-        return cls.query.filter_by(project_name=project_name).first()    
+        return cls.query.filter_by(id=id).first() 
     
     @classmethod
     def find_all(cls):

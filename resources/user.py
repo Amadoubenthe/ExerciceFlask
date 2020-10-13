@@ -41,39 +41,40 @@ class UserRegister(Resource):
 
 
     def post(self):
+
         data = _user_parser.parse_args()
+
+        email = data['email']
+        if not email:
+            return {"message": "The email field is empty"}
 
         if UserModel.find_by_email(data['email']):
             return {"message": "A user with that email already exists"}, 400
 
-        email = data['email']
-        if not email:
-            return {"message": "Veuillez entrer votre mail"}
-
         match_email = re.search(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', email)
         if not match_email:
-            return {"message": "Movaise adresse mail"}    
+            return {"message": "Movaise email address"}    
             
         password = data['password']
         if not password:
-            return {"message": "Veuillez entrer un mot de passe"}
+            return {"message": "The password field is empty"}
 
         special_sym=['$','@','#']
  
         if len(password) < 8:
             return {"message": "the length of password should be at least 8 char long"}
         if not any(char.isdigit() for char in password):
-            return {"message": "le mot de passe doit avoir au moins un chiffre"}
+            return {"message": "password must have at least one number"}
         if not any(char.isupper() for char in password):
-            return {"message": "le mot de passe doit avoir au moins une lettre majuscule"}
+            return {"message": "password must have at least one uppercase letter"}
         if not any(char.islower() for char in password):
-            return {"message": "le mot de passe doit avoir au moins une lettre minuscule"}
+            return {"message": "password must have at least one lowercase letter"}
         if not any(char in special_sym for char in password):
-            return {"message": "le mot de passe doit avoir au moins un des symboles suivant $@#"}
+            return {"message": "the password must have at least one of the following symbols $@#"}
 
         confirm_password = data['confirm_password']
         if not confirm_password or confirm_password != password:
-            return {"message": "Veuillez confirmez le mot de passe"}
+            return {"message": "Please confirm the password"}
 
         pwd_hashed = UserModel.make_password_hash(password)
         confirm_password_hased = UserModel.make_password_hash(confirm_password)
@@ -117,15 +118,20 @@ class UserActivateResource(Resource):
         email = confirm_token(token)
         if email is False:
             return {"message": "Invalid token or token expired"}, 400
+
         user = UserModel.find_by_email(email)
+
         if not user:
-            return {"message": "User not found"}, 404   
+            return {"message": "User not found"}, 404  
+
         if user.email_confirmed is True:
             return {"message": "The user account is already activated"}, 400
+
         user.email_confirmed = True
         user.email_confirmed_on = datetime.datetime.now()
         user.save_to_db()
-        access_token = create_access_token(identity=user.id, fresh=True) 
+        access_token = create_access_token(identity=user.id, fresh=True)
+        
         return {'access_token': access_token}, 200
 
 class UserLogin(Resource):
@@ -143,10 +149,15 @@ class UserLogin(Resource):
                 nullable=False,
                 help="This field cannot be blank."
                 )
+
     def post(self):
         data = UserLogin.parser.parse_args()
+        email = data['email']
+        if not email:
+            return {"message": "The email field is empty"}
 
         user = UserModel.find_by_email(data['email'])
+
         password = data['password']
         if user.email_confirmed is False:
             return {'message': 'The user account is not activated yet'}, 403
