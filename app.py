@@ -6,7 +6,7 @@ from flask_mail import Mail, Message
 from db import db
 
 from resources.user import UserRegister, User, UserLogin, UserActivateResource
-from resources.project import Project, ProjectList, ArchiveProject, ProjectStat
+from resources.project import Project, ProjectList, ArchiveProject, ProjectStat, StatProject
 from resources.task import Task, TaskList, Statistic, CompleteTask, StatisticPeriode, BestTaskTermined, BestTaskTerminedInterval
 
 app = Flask(__name__)
@@ -77,6 +77,10 @@ def revoked_token_callback():
 
 
 api.add_resource(UserRegister, '/register')
+
+api.add_resource(StatProject, '/projects/<int:id>/stat')
+
+
 api.add_resource(UserActivateResource, '/users/activate/<string:token>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(User, '/users/<int:user_id>')
