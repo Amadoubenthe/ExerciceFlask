@@ -8,41 +8,7 @@ from db import db
 from resources.user import UserRegister, User, UserLogin, UserActivateResource
 from resources.project import Project, ProjectList, ArchiveProject, ProjectStat, StatProject
 from resources.task import Task, TaskList, Statistic, CompleteTask, StatisticPeriode, BestTaskTermined, BestTaskTerminedInterval
-
 import datetime
-
-# app = Flask(__name__)
-# # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root''@localhost/test_db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['PROPAGATE_EXCEPTIONS'] = True
-# # app.config['MAIL_SERVER']="smtp.gmail.com"
-# app.config['MAIL_SERVER']="localhost"
-# # app.config['MAIL_PORT'] = 465
-# app.config['MAIL_PORT'] = 1025
-# app.config['MAIL_USERNAME'] = 'benthebagnan@gmail.com'
-# app.config['MAIL_PASSWORD'] = 'NeenanDiaraye123@'
-
-# # app.config['MAIL_USE_TLS'] = False
-# # app.config['MAIL_USE_SSL'] = True
-
-# app.config['MAIL_USE_TLS'] = True
-# app.config['MAIL_USE_SSL'] = False
-# app.config['SECRET_KEY'] = "diallo"
-# app.config['SECURITY_PASSWORD_SALT']='gfghtt6884@@%68848@$$@yygb'
-# app.config['MAIL_DEFAULT_SENDER']='benthebagnan@gmail.com'
-
-# api = Api(app)
-
-# mail = Mail(app)
-# mail.init_app(app)
-
-# @app.before_first_request
-# def create_tables():
-#     db.create_all()
-
-# jwt = JWTManager(app)
-
 
 from db import db
 app = Flask(__name__)
@@ -50,18 +16,7 @@ mail = Mail(app)
 
 db.init_app(app)
 
-# # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost:""/db'
-# # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root''@localhost/flask_project'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SECRET_KEY'] = 'nadia@'
-# app.config['MAIL_SERVER'] = 'localhost'
-# app.config['MAIL_PORT'] = 1025
-# app.config['MAIL_USE_TLS'] = True
-# app.config['MAIL_USE_SSL'] = False
-# app.config['MAIL_USERNAME'] = None
-# app.config['MAIL_PASSWORD '] = None
-# app.config['MAIL_DEFAULT_SENDER'] = 'nksz.fee00@gmail.com'
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data3.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -71,9 +26,9 @@ app.config['MAIL_SERVER'] = 'localhost'
 app.config['MAIL_PORT'] = 1025
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'benthebagnan@gmail.com'
-app.config['MAIL_PASSWORD '] = 'NeenanDiaraye123@'
-app.config['MAIL_DEFAULT_SENDER'] = 'benthebagnan@gmail.com'
+app.config['MAIL_USERNAME'] = 'your_mail'
+app.config['MAIL_PASSWORD '] = 'your_password'
+app.config['MAIL_DEFAULT_SENDER'] = 'your_mail'
 app.config['SECURITY_PASSWORD_SALT'] = 'gfghtt6884@@%68848@$$@yygb'
 
 api = Api(app)
@@ -150,7 +105,7 @@ api.add_resource(TaskList, '/tasks')
 
 api.add_resource(Task, '/projects/tasks', '/projects/tasks/<int:id>')
 
-# '/projects/<int:id>/tasks'
+
 
 if __name__ == '__main__':
 
