@@ -20,7 +20,7 @@ class Task(Resource):
                         nullable=False,
                     )
               
-    parser.add_argument("status",
+    parser.add_argument("is_open",
                         type=bool,
                         required=False,
                         nullable=False,
@@ -63,7 +63,7 @@ class Task(Resource):
         if not task_name:
             return {"message": "Please enter the name of task 'task_name' "}
 
-        status = data["status"]   
+        is_open = data["is_open"]   
 
         project_id = data["project_id"] 
         if not project_id:
@@ -81,22 +81,25 @@ class Task(Resource):
         if project.is_archived == True:
             return {"message": "Project Closed"}, 401
 
-        try:
-            task = TaskModel(**data)
-            task.user_id = get_jwt_identity()
-            task.save_to_db()
+        task = TaskModel(**data)
+        task.user_id = get_jwt_identity()
+        task.save_to_db()
 
-        except:
-            return {"message": "An error occured creating the Task"}, 500
+        # try:
+        #     task = TaskModel(**data)
+        #     task.user_id = get_jwt_identity()
+        #     task.save_to_db()
+        # except:
+        #     return {"message": "An error occured creating the Task"}, 500
 
         task_id = task.id    
         task_name = task.task_name
-        status = task.status
+        is_open = task.is_open
 
         return {
             "task_id": task_id,
             "task_name": task_name,
-            "status": status
+            "is_open": is_open
         }, 201
 
     @jwt_required    
@@ -126,27 +129,30 @@ class Task(Resource):
         if project.is_archived:
             return {"message": "Close Unauthorized"}, 401
 
-        status = data['status']
-        if status:
-            task.status = status
+        is_open = data['is_open']
 
-        status = task.status
+        print(is_open)
+
+        if is_open:
+            task.is_open = is_open
+
+        # is_open = task.is_open
 
         try:
             task.task_name = task_name
-            task.status = status
+            task.is_open = is_open
             task.save_to_db()
         except :
             return {"message": "An error occured creating the Project"}, 500
 
         project_id = task.project_id    
-        status = task.status
+        is_open = task.is_open
         task_name = task.task_name
 
         return {
             "project_id": project_id,
             "task_name": task_name,
-            "status": status
+            "is_open": is_open
             }, 201
 
     @jwt_required
@@ -176,13 +182,13 @@ class CompleteTask(Resource):
         if not task:
             return {"message": "task not found"}, 404
 
-        if task.status == False:
+        if task.is_open == False:
             return {"message": "Task aleready completed"}
 
         if task.user_id != current_user_id:
             return {"message": "Unauthorized"}, 401
 
-        task.status = False
+        task.is_open = False
         task.termined_at = datetime.datetime.now()
         task.save_to_db()
 
@@ -207,8 +213,8 @@ class Statistic(Resource):
         current_user_id = get_jwt_identity()
 
         qry = (db.session.query(ProjectModel.project_name.label('project_name'),
-                func.count(TaskModel.status).label('total_task_termined'))
-                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.status == False)
+                func.count(TaskModel.is_open).label('total_task_termined'))
+                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.is_open == False)
                 .filter(TaskModel.user_id==current_user_id)
                 .group_by(TaskModel.project_id)
                 .order_by(desc('total_task_termined')).all()
@@ -226,8 +232,8 @@ class StatisticPeriode(Resource):
 
         current_user_id = get_jwt_identity()
         qry = (db.session.query(ProjectModel.project_name.label('project_name'),
-                func.count(TaskModel.status).label('total_task_termined'))
-                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.status==False)
+                func.count(TaskModel.is_open).label('total_task_termined'))
+                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.is_open==False)
                 .filter(TaskModel.termined_at.between(date_debut,date_fin))
                 .filter(TaskModel.user_id==current_user_id)
                 .group_by(TaskModel.project_id)
@@ -244,8 +250,8 @@ class BestTaskTermined(Resource):
         current_user_id = get_jwt_identity()
 
         qry = (db.session.query(ProjectModel.project_name,ProjectModel.description.label('project_name'),
-                func.count(TaskModel.status).label('total_task_termined'))
-                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.status == False)
+                func.count(TaskModel.is_open).label('total_task_termined'))
+                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.is_open == False)
                 .filter(TaskModel.user_id==current_user_id)
                 .group_by(TaskModel.project_id)
                 .order_by(desc('total_task_termined')).limit(1).all()
@@ -266,8 +272,8 @@ class BestTaskTerminedInterval(Resource):
         current_user_id = get_jwt_identity()
 
         qry = (db.session.query(ProjectModel.project_name,ProjectModel.description.label('project_name'),
-                func.count(TaskModel.status).label('total_task_termined'))
-                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.status == False)
+                func.count(TaskModel.is_open).label('total_task_termined'))
+                .join(ProjectModel, TaskModel.project_id == ProjectModel.id).filter(TaskModel.is_open == False)
                 .filter(TaskModel.termined_at.between(date_debut,date_fin))
                 .filter(TaskModel.user_id==current_user_id)
                 .group_by(TaskModel.project_id)

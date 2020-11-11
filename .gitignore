@@ -3,4 +3,5 @@
 __Pycache__/
 *.pyc
 data.db
+data3.db
 venv

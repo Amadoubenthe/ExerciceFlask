@@ -6,7 +6,7 @@ class TaskModel(db.Model):
  
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     task_name = db.Column(db.String(80), nullable=False)
-    status = db.Column(db.Boolean, default=True)
+    is_open = db.Column(db.Boolean, default=True)
     termined_at = db.Column(db.DateTime, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -15,9 +15,9 @@ class TaskModel(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id", ondelete="cascade"))
     projects = db.relationship('ProjectModel', back_populates="tasks")
 
-    def __init__(self, task_name, status, project_id):
+    def __init__(self, task_name, is_open, project_id):
         self.task_name = task_name
-        self.status = status
+        self.is_open = is_open
         self.project_id = project_id
 
 
@@ -26,7 +26,7 @@ class TaskModel(db.Model):
             'task_id': self.id,
             'project_id': self.project_id,
             'task_name': self.task_name,
-            'status': self.status
+            'is_open': self.is_open
         }
 
     @classmethod

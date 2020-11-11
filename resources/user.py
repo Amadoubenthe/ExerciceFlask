@@ -79,20 +79,32 @@ class UserRegister(Resource):
         pwd_hashed = UserModel.make_password_hash(password)
         confirm_password_hased = UserModel.make_password_hash(confirm_password)
 
-        try:
-            user = UserModel(email=email, password=pwd_hashed, confirm_password=confirm_password_hased)
+        user = UserModel(email=email, password=pwd_hashed, confirm_password=confirm_password_hased)
 
-            user.save_to_db()
+        user.save_to_db()
 
-            token = generate_confirmation_token(user.email)
-            print(token)
-            subject = "Please confirm your email to be able to use our app."
-            link = url_for("useractivateresource", token=token, _external=True)
-            body = f"Hi, Thanks for using our app! Please confirm your registration by clicking on the link: {link} . Welcome to our family"
-            send_email(user.email, subject, body)
-            return {"message": "Thanks for registering!  Please check your email to confirm your email address, success."}, 201
-        except:
-            return {'message': 'An error occured while creating the user.'}, 500
+        token = generate_confirmation_token(user.email)
+        print(token)
+        subject = "Please confirm your email to be able to use our app."
+        link = url_for("useractivateresource", token=token, _external=True)
+        body = f"Hi, Thanks for using our app! Please confirm your registration by clicking on the link: {link} . Welcome to our family"
+        send_email(user.email, subject, body)
+        return {"message": "Thanks for registering!  Please check your email to confirm your email address, success."}, 201
+
+        # try:
+        #     user = UserModel(email=email, password=pwd_hashed, confirm_password=confirm_password_hased)
+
+        #     user.save_to_db()
+
+        #     token = generate_confirmation_token(user.email)
+        #     print(token)
+        #     subject = "Please confirm your email to be able to use our app."
+        #     link = url_for("useractivateresource", token=token, _external=True)
+        #     body = f"Hi, Thanks for using our app! Please confirm your registration by clicking on the link: {link} . Welcome to our family"
+        #     send_email(user.email, subject, body)
+        #     return {"message": "Thanks for registering!  Please check your email to confirm your email address, success."}, 201
+        # except:
+        #     return {'message': 'An error occured while creating the user.'}, 500
 
 
 class User(Resource):
